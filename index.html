@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitrine — Produtos Selecionados</title>
+  <meta name="description" content="Produtos cuidadosamente selecionados em casa, beleza, saúde e esportes com os melhores preços.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FAF8F5;
+      --white:   #FFFFFF;
+      --sage:    #7A9E7E;
+      --sage-lt: #EAF2EB;
+      --blush:   #E8C5B8;
+      --blush-lt:#FBF3F0;
+      --stone:   #9C9489;
+      --ink:     #2C2A27;
+      --ink-lt:  #5C5A57;
+      --border:  #EDE9E4;
+      --shadow:  0 2px 12px rgba(44,42,39,.07);
+      --shadow-h:0 6px 24px rgba(44,42,39,.13);
+      --radius:  14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 600;
+      color: var(--ink); letter-spacing: -.5px;
+      text-decoration: none;
+    }
+    .logo span { color: var(--sage); }
+    .header-tagline {
+      font-size: 12px; color: var(--stone);
+      font-weight: 300; letter-spacing: .5px;
+      display: none;
+    }
+    @media (min-width: 640px) { .header-tagline { display: block; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--sage-lt) 0%, var(--blush-lt) 100%);
+      padding: 56px 24px 48px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 600; line-height: 1.15;
+      color: var(--ink); margin-bottom: 14px;
+    }
+    .hero h1 em { color: var(--sage); font-style: italic; }
+    .hero p {
+      color: var(--ink-lt); font-size: 16px; font-weight: 300;
+      max-width: 480px; margin: 0 auto;
+    }
+
+    /* ── Filters ── */
+    .filters-wrap {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .filters {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px;
+      display: flex; gap: 8px; align-items: center;
+      height: 52px;
+    }
+    .filter-btn {
+      padding: 6px 18px; border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--white); color: var(--ink-lt);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      cursor: pointer; white-space: nowrap;
+      transition: all .18s ease;
+    }
+    .filter-btn:hover { border-color: var(--sage); color: var(--sage); }
+    .filter-btn.active {
+      background: var(--sage); border-color: var(--sage);
+      color: var(--white);
+    }
+
+    /* ── Grid ── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .section-label {
+      font-size: 11px; letter-spacing: 1.5px; color: var(--stone);
+      text-transform: uppercase; font-weight: 500; margin-bottom: 20px;
+    }
+
+    #products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .2s ease, box-shadow .2s ease;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp .4s ease forwards;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-h);
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-img-wrap {
+      position: relative; overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .card-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .4s ease;
+    }
+    .card:hover .card-img-wrap img { transform: scale(1.04); }
+
+    .badge {
+      position: absolute; top: 12px; left: 12px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 500; letter-spacing: .3px;
+    }
+    .badge-featured {
+      background: var(--ink); color: var(--white);
+    }
+    .platform-badge {
+      position: absolute; top: 12px; right: 12px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 500;
+      background: rgba(255,255,255,.88); color: var(--ink-lt);
+      backdrop-filter: blur(4px);
+    }
+
+    .card-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+    .cat-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--sage);
+    }
+    .card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600; line-height: 1.25;
+      color: var(--ink);
+    }
+    .card-desc {
+      font-size: 13px; color: var(--ink-lt); font-weight: 300;
+      line-height: 1.55; flex: 1;
+    }
+
+    .card-footer {
+      padding: 14px 20px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+    .price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600; color: var(--ink);
+    }
+    .cta-btn {
+      padding: 9px 20px; border-radius: 8px;
+      background: var(--sage); color: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background .18s ease, transform .15s ease;
+      display: inline-block;
+    }
+    .cta-btn:hover { background: #5d8561; transform: scale(1.03); }
+
+    /* ── Empty ── */
+    .empty {
+      text-align: center; padding: 80px 24px; color: var(--stone);
+      grid-column: 1 / -1;
+    }
+    .empty p { font-size: 15px; margin-top: 8px; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,.45);
+      text-align: center; padding: 32px 24px;
+      font-size: 12px; font-weight: 300; letter-spacing: .3px;
+    }
+    footer a { color: rgba(255,255,255,.6); text-decoration: none; }
+    footer .disc {
+      margin-top: 8px; font-size: 11px; color: rgba(255,255,255,.3);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">Vitrine<span>.</span></a>
+    <span class="header-tagline">Produtos selecionados com cuidado</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Encontre o que<br><em>realmente vale</em> a pena</h1>
+  <p>Seleção curada de produtos em casa, beleza, saúde e esportes — com os melhores links de oferta.</p>
+</section>
+
+<div class="filters-wrap">
+  <div class="filters">
+    <button class="filter-btn active" data-cat="all">Todos</button>
+    <button class="filter-btn" data-cat="casa">Casa &amp; Decoração</button>
+    <button class="filter-btn" data-cat="saude">Saúde &amp; Bem-estar</button>
+    <button class="filter-btn" data-cat="beleza">Moda &amp; Beleza</button>
+    <button class="filter-btn" data-cat="esportes">Esportes &amp; Fitness</button>
+  </div>
+</div>
+
+<main class="main">
+  <p class="section-label" id="results-label">Carregando produtos…</p>
+  <div id="products-grid"></div>
+</main>
+
+<footer>
+  <p>© 2025 Vitrine — Todos os direitos reservados.</p>
+  <p><a href="politica.html">Política de privacidade</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
+  <p class="disc">Este site contém links de afiliado. Ao comprar pelos links, recebemos uma comissão sem custo adicional para você.</p>
+</footer>
+
+<script>
+  const CATS = {
+    casa:     'Casa & Decoração',
+    saude:    'Saúde & Bem-estar',
+    beleza:   'Moda & Beleza',
+    esportes: 'Esportes & Fitness'
+  };
+
+  let allProducts = [];
+  let activeFilter = 'all';
+
+  async function loadProducts() {
+    try {
+      const res = await fetch('./products.json?t=' + Date.now());
+      allProducts = await res.json();
+      render();
+    } catch (e) {
+      document.getElementById('products-grid').innerHTML =
+        '<div class="empty"><strong>Não foi possível carregar os produtos.</strong><p>Verifique se o arquivo products.json está na mesma pasta.</p></div>';
+    }
+  }
+
+  function render() {
+    const list = activeFilter === 'all'
+      ? allProducts
+      : allProducts.filter(p => p.category === activeFilter);
+
+    const grid = document.getElementById('products-grid');
+    const label = document.getElementById('results-label');
+
+    label.textContent = list.length === 0
+      ? 'Nenhum produto nesta categoria ainda.'
+      : `${list.length} produto${list.length > 1 ? 's' : ''} encontrado${list.length > 1 ? 's' : ''}`;
+
+    if (list.length === 0) {
+      grid.innerHTML = '<div class="empty"><strong>Nenhum produto aqui ainda.</strong><p>Volte em breve!</p></div>';
+      return;
+    }
+
+    grid.innerHTML = list.map((p, i) => `
+      <article class="card" style="animation-delay:${i * 60}ms">
+        <div class="card-img-wrap">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          ${p.featured ? '<span class="badge badge-featured">Destaque</span>' : ''}
+          <span class="platform-badge">${p.platform}</span>
+        </div>
+        <div class="card-body">
+          <span class="cat-label">${CATS[p.category] || p.category}</span>
+          <h2 class="card-name">${p.name}</h2>
+          <p class="card-desc">${p.description}</p>
+        </div>
+        <div class="card-footer">
+          <span class="price">${p.price}</span>
+          <a class="cta-btn" href="${p.affiliateUrl}" target="_blank" rel="noopener sponsored">Ver oferta →</a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.cat;
+      render();
+    });
+  });
+
+  loadProducts();
+</script>
+</body>
+</html>

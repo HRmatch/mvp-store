@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Vitrine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F6F5F2;
+      --white:   #FFFFFF;
+      --sage:    #7A9E7E;
+      --sage-dk: #5d8561;
+      --sage-lt: #EAF2EB;
+      --blush:   #E8C5B8;
+      --ink:     #2C2A27;
+      --ink-lt:  #5C5A57;
+      --stone:   #9C9489;
+      --border:  #E8E4DF;
+      --danger:  #C0463C;
+      --danger-lt:#FBF0EF;
+      --warn:    #B87D2E;
+      --warn-lt: #FEF6E8;
+      --radius:  10px;
+      --shadow:  0 1px 6px rgba(44,42,39,.08);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; min-height: 100vh; }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--ink); color: #fff;
+      padding: 0 24px; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 200;
+    }
+    .topbar-logo { font-weight: 600; font-size: 16px; letter-spacing: -.3px; }
+    .topbar-logo span { color: var(--sage); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #888; }
+    .status-dot.connected { background: #6DC96D; }
+    .status-text { font-size: 12px; color: rgba(255,255,255,.5); }
+    .btn-link-site {
+      font-size: 12px; color: rgba(255,255,255,.6);
+      text-decoration: none; border: 1px solid rgba(255,255,255,.2);
+      padding: 4px 12px; border-radius: 6px; transition: all .15s;
+    }
+    .btn-link-site:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: calc(100vh - 52px); }
+
+    .sidebar {
+      width: 220px; flex-shrink: 0;
+      background: var(--white); border-right: 1px solid var(--border);
+      padding: 24px 12px;
+    }
+    .sidebar-label {
+      font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--stone); font-weight: 500; padding: 0 12px; margin-bottom: 8px;
+    }
+    .nav-btn {
+      width: 100%; text-align: left;
+      padding: 9px 12px; border-radius: 8px; border: none;
+      background: none; color: var(--ink-lt); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: background .15s, color .15s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-btn:hover { background: var(--bg); color: var(--ink); }
+    .nav-btn.active { background: var(--sage-lt); color: var(--sage-dk); }
+    .nav-icon { font-size: 15px; }
+    .sidebar-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* ── Content ── */
+    .content { flex: 1; padding: 28px; max-width: 900px; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .page-sub { color: var(--stone); font-size: 13px; margin-bottom: 24px; }
+
+    /* ── Config panel ── */
+    .config-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 24px; margin-bottom: 20px;
+    }
+    .config-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-lt); margin-bottom: 5px; }
+    .field input {
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink);
+      transition: border-color .15s;
+    }
+    .field input:focus { outline: none; border-color: var(--sage); background: var(--white); }
+    .field input[type="password"] { font-family: 'DM Mono', monospace; letter-spacing: 2px; }
+    .field-hint { font-size: 11px; color: var(--stone); margin-top: 4px; }
+    .field-hint a { color: var(--sage-dk); }
+
+    .btn { 
+      padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      transition: all .15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary { background: var(--sage); color: #fff; }
+    .btn-primary:hover { background: var(--sage-dk); }
+    .btn-secondary { background: var(--border); color: var(--ink); }
+    .btn-secondary:hover { background: #ddd; }
+    .btn-danger { background: var(--danger-lt); color: var(--danger); }
+    .btn-danger:hover { background: #fad9d7; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+    .alert {
+      padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px;
+    }
+    .alert-warn { background: var(--warn-lt); color: var(--warn); border: 1px solid #f5ddb0; }
+    .alert-success { background: var(--sage-lt); color: var(--sage-dk); border: 1px solid #c5ddc7; }
+    .alert-danger { background: var(--danger-lt); color: var(--danger); border: 1px solid #f5c5c3; }
+
+    /* ── Products page ── */
+    .products-toolbar {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .products-count { font-size: 13px; color: var(--stone); }
+
+    .product-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .product-row {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .product-row-img {
+      width: 60px; height: 46px; border-radius: 6px;
+      object-fit: cover; flex-shrink: 0; background: var(--bg);
+    }
+    .product-row-info { flex: 1; min-width: 0; }
+    .product-row-name { font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-row-meta { font-size: 12px; color: var(--stone); margin-top: 2px; }
+    .cat-pill {
+      display: inline-block; padding: 2px 8px; border-radius: 999px;
+      font-size: 10px; font-weight: 500; letter-spacing: .3px;
+      background: var(--sage-lt); color: var(--sage-dk);
+    }
+    .product-row-price { font-weight: 600; font-size: 14px; flex-shrink: 0; min-width: 80px; text-align: right; }
+    .product-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    /* ── Form modal / inline ── */
+    .form-section {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-top: 16px;
+      display: none;
+    }
+    .form-section.open { display: block; }
+    .form-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 18px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid .span2 { grid-column: 1 / -1; }
+    .field select {
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink);
+      transition: border-color .15s; appearance: none;
+    }
+    .field select:focus { outline: none; border-color: var(--sage); background: var(--white); }
+    .field textarea {
+      width: 100%; padding: 9px 12px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink);
+      resize: vertical; min-height: 80px;
+    }
+    .field textarea:focus { outline: none; border-color: var(--sage); background: var(--white); }
+    .checkbox-wrap { display: flex; align-items: center; gap: 8px; }
+    .checkbox-wrap input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--sage); }
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+    /* ── Saving overlay ── */
+    #saving-toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--ink); color: #fff;
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      transform: translateY(80px); opacity: 0;
+      transition: all .25s ease;
+      pointer-events: none; z-index: 9999;
+    }
+    #saving-toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-logo">Vitrine<span>.</span> Admin</span>
+  <div class="topbar-right">
+    <span class="status-dot" id="status-dot"></span>
+    <span class="status-text" id="status-text">Não conectado</span>
+    <a class="btn-link-site" href="index.html" target="_blank">Ver site →</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <p class="sidebar-label">Menu</p>
+    <button class="nav-btn active" data-page="products"><span class="nav-icon">📦</span> Produtos</button>
+    <button class="nav-btn" data-page="config"><span class="nav-icon">⚙️</span> Configurações</button>
+    <hr class="sidebar-divider">
+    <button class="nav-btn" onclick="window.open('index.html','_blank')"><span class="nav-icon">🔗</span> Ver site</button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ── Página: Produtos ── -->
+    <div class="page active" id="page-products">
+      <h1 class="page-title">Produtos</h1>
+      <p class="page-sub">Gerencie os produtos do seu catálogo.</p>
+
+      <div id="not-configured" class="alert alert-warn" style="display:none">
+        ⚠️ Configure as credenciais do GitHub primeiro em <strong>Configurações</strong> para poder salvar alterações.
+      </div>
+      <div id="page-alert" style="display:none"></div>
+
+      <div class="products-toolbar">
+        <span class="products-count" id="products-count">—</span>
+        <button class="btn btn-primary" onclick="openAddForm()">+ Novo produto</button>
+      </div>
+
+      <!-- Form: adicionar / editar -->
+      <div class="form-section" id="product-form">
+        <h3 id="form-title">Novo produto</h3>
+        <input type="hidden" id="f-id">
+        <div class="form-grid">
+          <div class="field span2">
+            <label>Nome do produto *</label>
+            <input type="text" id="f-name" placeholder="Ex: Luminária LED Regulável">
+          </div>
+          <div class="field">
+            <label>Categoria *</label>
+            <select id="f-cat">
+              <option value="casa">Casa & Decoração</option>
+              <option value="saude">Saúde & Bem-estar</option>
+              <option value="beleza">Moda & Beleza</option>
+              <option value="esportes">Esportes & Fitness</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Preço (ex: R$ 199,90) *</label>
+            <input type="text" id="f-price" placeholder="R$ 0,00">
+          </div>
+          <div class="field span2">
+            <label>Descrição *</label>
+            <textarea id="f-desc" placeholder="Descreva brevemente o produto e seus diferenciais..."></textarea>
+          </div>
+          <div class="field span2">
+            <label>Link de afiliado *</label>
+            <input type="url" id="f-url" placeholder="https://amzn.to/... ou https://hotmart.com/...">
+          </div>
+          <div class="field span2">
+            <label>URL da imagem</label>
+            <input type="url" id="f-img" placeholder="https://...">
+            <p class="field-hint">Use uma URL direta de imagem (JPG/PNG). Você pode hospedar em <a href="https://imgur.com" target="_blank">Imgur</a> ou usar links do produto.</p>
+          </div>
+          <div class="field">
+            <label>Plataforma</label>
+            <select id="f-platform">
+              <option value="Amazon">Amazon</option>
+              <option value="Hotmart">Hotmart</option>
+              <option value="Monetizze">Monetizze</option>
+              <option value="Lomadee">Lomadee</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="field" style="display:flex;align-items:flex-end;padding-bottom:2px">
+            <label class="checkbox-wrap">
+              <input type="checkbox" id="f-featured">
+              <span>Marcar como destaque</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveProduct()">Salvar produto</button>
+          <button class="btn btn-secondary" onclick="closeForm()">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Lista -->
+      <div class="product-list" id="product-list"></div>
+    </div>
+
+    <!-- ── Página: Configurações ── -->
+    <div class="page" id="page-config">
+      <h1 class="page-title">Configurações</h1>
+      <p class="page-sub">Conecte o admin ao seu repositório GitHub para salvar alterações automaticamente.</p>
+
+      <div class="config-card">
+        <h3>Conexão com GitHub</h3>
+        <p class="field-hint" style="margin-bottom:16px">
+          As credenciais são salvas apenas no seu navegador (sessionStorage) e nunca enviadas a terceiros.
+        </p>
+        <div class="field">
+          <label>Seu usuário GitHub</label>
+          <input type="text" id="cfg-user" placeholder="meuusuario">
+        </div>
+        <div class="field">
+          <label>Nome do repositório</label>
+          <input type="text" id="cfg-repo" placeholder="meu-site-afiliados">
+        </div>
+        <div class="field">
+          <label>Personal Access Token (PAT)</label>
+          <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          <p class="field-hint">
+            Crie um token em <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens</a> com permissão <strong>repo → Contents → write</strong>.
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="saveConfig()">Salvar e testar conexão</button>
+      </div>
+
+      <div class="config-card">
+        <h3>Como publicar o site</h3>
+        <ol style="padding-left:18px;line-height:2;font-size:13px;color:var(--ink-lt)">
+          <li>Crie um repositório público no GitHub.</li>
+          <li>Faça upload dos arquivos <code style="background:var(--bg);padding:2px 6px;border-radius:4px">index.html</code>, <code style="background:var(--bg);padding:2px 6px;border-radius:4px">admin.html</code> e <code style="background:var(--bg);padding:2px 6px;border-radius:4px">products.json</code>.</li>
+          <li>Vá em <strong>Settings → Pages</strong> e ative o GitHub Pages na branch main.</li>
+          <li>Seu site estará em <code style="background:var(--bg);padding:2px 6px;border-radius:4px">https://seunome.github.io/repositorio</code>.</li>
+          <li>Configure as credenciais acima e gerencie tudo por aqui.</li>
+        </ol>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="saving-toast">💾 Salvando no GitHub…</div>
+
+<script>
+  const CATS_LABEL = { casa:'Casa & Decoração', saude:'Saúde & Bem-estar', beleza:'Moda & Beleza', esportes:'Esportes & Fitness' };
+
+  /* ── State ── */
+  let products = [];
+  let ghUser = '', ghRepo = '', ghToken = '', fileSha = '';
+  let editingId = null;
+
+  /* ── Navigation ── */
+  document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    });
+  });
+
+  /* ── Config ── */
+  function loadConfig() {
+    ghUser  = sessionStorage.getItem('gh_user')  || '';
+    ghRepo  = sessionStorage.getItem('gh_repo')  || '';
+    ghToken = sessionStorage.getItem('gh_token') || '';
+    document.getElementById('cfg-user').value  = ghUser;
+    document.getElementById('cfg-repo').value  = ghRepo;
+    document.getElementById('cfg-token').value = ghToken;
+    updateStatus();
+  }
+
+  async function saveConfig() {
+    ghUser  = document.getElementById('cfg-user').value.trim();
+    ghRepo  = document.getElementById('cfg-repo').value.trim();
+    ghToken = document.getElementById('cfg-token').value.trim();
+    sessionStorage.setItem('gh_user',  ghUser);
+    sessionStorage.setItem('gh_repo',  ghRepo);
+    sessionStorage.setItem('gh_token', ghToken);
+    const ok = await testConnection();
+    if (ok) {
+      updateStatus(true);
+      await loadProductsFromGitHub();
+      // Navigate to products
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelector('.nav-btn[data-page="products"]').classList.add('active');
+      document.getElementById('page-products').classList.add('active');
+    } else {
+      updateStatus(false, 'Erro');
+    }
+  }
+
+  async function testConnection() {
+    if (!ghUser || !ghRepo || !ghToken) return false;
+    try {
+      const res = await ghGet();
+      return res.ok;
+    } catch { return false; }
+  }
+
+  function updateStatus(connected, label) {
+    const dot  = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    const ok   = connected !== undefined ? connected : !!(ghUser && ghRepo && ghToken);
+    dot.className  = 'status-dot' + (ok ? ' connected' : '');
+    text.textContent = label || (ok ? `${ghUser}/${ghRepo}` : 'Não conectado');
+  }
+
+  /* ── GitHub API ── */
+  function apiUrl() {
+    return `https://api.github.com/repos/${ghUser}/${ghRepo}/contents/products.json`;
+  }
+
+  async function ghGet() {
+    return fetch(apiUrl(), {
+      headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' }
+    });
+  }
+
+  async function loadProductsFromGitHub() {
+    if (!ghUser || !ghRepo || !ghToken) {
+      // Fall back to local products.json
+      try {
+        const r = await fetch('./products.json');
+        products = await r.json();
+      } catch { products = []; }
+      renderList();
+      return;
+    }
+    try {
+      const res = await ghGet();
+      if (!res.ok) throw new Error('not found');
+      const data = await res.json();
+      fileSha = data.sha;
+      products = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      renderList();
+    } catch {
+      // Fallback to local
+      try {
+        const r = await fetch('./products.json');
+        products = await r.json();
+      } catch { products = []; }
+      renderList();
+      showPageAlert('Não foi possível conectar ao GitHub. Mostrando products.json local (somente leitura).', 'warn');
+    }
+  }
+
+  async function saveToGitHub() {
+    if (!ghUser || !ghRepo || !ghToken) {
+      showPageAlert('Configure as credenciais do GitHub em Configurações para salvar.', 'warn');
+      return false;
+    }
+    showToast('💾 Salvando no GitHub…');
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
+    try {
+      const res = await fetch(apiUrl(), {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${ghToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Atualiza products.json via admin',
+          content,
+          sha: fileSha
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message);
+      }
+      const data = await res.json();
+      fileSha = data.content.sha;
+      showToast('✅ Salvo com sucesso!', 2000);
+      return true;
+    } catch (e) {
+      showToast('❌ Erro ao salvar: ' + e.message, 3000);
+      return false;
+    }
+  }
+
+  /* ── Render ── */
+  function renderList() {
+    const list  = document.getElementById('product-list');
+    const count = document.getElementById('products-count');
+    count.textContent = `${products.length} produto${products.length !== 1 ? 's' : ''}`;
+
+    const configured = !!(ghUser && ghRepo && ghToken);
+    document.getElementById('not-configured').style.display = configured ? 'none' : 'block';
+
+    if (products.length === 0) {
+      list.innerHTML = '<p style="color:var(--stone);font-size:13px;padding:20px 0">Nenhum produto cadastrado. Adicione o primeiro!</p>';
+      return;
+    }
+
+    list.innerHTML = products.map(p => `
+      <div class="product-row" id="row-${p.id}">
+        <img class="product-row-img" src="${p.image || 'https://picsum.photos/seed/' + p.id + '/120/90'}" alt="${p.name}" onerror="this.src='https://picsum.photos/seed/fallback/120/90'">
+        <div class="product-row-info">
+          <div class="product-row-name">${p.name} ${p.featured ? '⭐' : ''}</div>
+          <div class="product-row-meta">
+            <span class="cat-pill">${CATS_LABEL[p.category] || p.category}</span>
+            &nbsp;· ${p.platform}
+          </div>
+        </div>
+        <div class="product-row-price">${p.price}</div>
+        <div class="product-row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Excluir</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ── Form ── */
+  function openAddForm() {
+    editingId = null;
+    document.getElementById('form-title').textContent = 'Novo produto';
+    document.getElementById('f-id').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-cat').value = 'casa';
+    document.getElementById('f-price').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-url').value = '';
+    document.getElementById('f-img').value = '';
+    document.getElementById('f-platform').value = 'Amazon';
+    document.getElementById('f-featured').checked = false;
+    const form = document.getElementById('product-form');
+    form.classList.add('open');
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function editProduct(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    editingId = id;
+    document.getElementById('form-title').textContent = 'Editar produto';
+    document.getElementById('f-id').value = p.id;
+    document.getElementById('f-name').value = p.name;
+    document.getElementById('f-cat').value = p.category;
+    document.getElementById('f-price').value = p.price;
+    document.getElementById('f-desc').value = p.description;
+    document.getElementById('f-url').value = p.affiliateUrl;
+    document.getElementById('f-img').value = p.image || '';
+    document.getElementById('f-platform').value = p.platform;
+    document.getElementById('f-featured').checked = !!p.featured;
+    const form = document.getElementById('product-form');
+    form.classList.add('open');
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeForm() {
+    document.getElementById('product-form').classList.remove('open');
+    editingId = null;
+  }
+
+  async function saveProduct() {
+    const name = document.getElementById('f-name').value.trim();
+    const url  = document.getElementById('f-url').value.trim();
+    if (!name || !url) {
+      showPageAlert('Preencha pelo menos o nome e o link de afiliado.', 'danger');
+      return;
+    }
+
+    const product = {
+      id:          editingId || String(Date.now()),
+      name,
+      category:    document.getElementById('f-cat').value,
+      price:       document.getElementById('f-price').value.trim() || 'Consulte',
+      description: document.getElementById('f-desc').value.trim(),
+      affiliateUrl:url,
+      image:       document.getElementById('f-img').value.trim() || `https://picsum.photos/seed/${Date.now()}/600/400`,
+      platform:    document.getElementById('f-platform').value,
+      featured:    document.getElementById('f-featured').checked
+    };
+
+    if (editingId) {
+      const idx = products.findIndex(x => x.id === editingId);
+      if (idx >= 0) products[idx] = product;
+    } else {
+      products.push(product);
+    }
+
+    closeForm();
+    renderList();
+    await saveToGitHub();
+    showPageAlert(editingId ? 'Produto atualizado!' : 'Produto adicionado!', 'success');
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm('Tem certeza que quer excluir este produto?')) return;
+    products = products.filter(p => p.id !== id);
+    renderList();
+    await saveToGitHub();
+    showPageAlert('Produto excluído.', 'success');
+  }
+
+  /* ── Utils ── */
+  function showPageAlert(msg, type = 'success') {
+    const el = document.getElementById('page-alert');
+    el.className = `alert alert-${type}`;
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+
+  let toastTimer;
+  function showToast(msg, duration = 0) {
+    const t = document.getElementById('saving-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    if (duration > 0) {
+      toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+    }
+  }
+
+  /* ── Init ── */
+  loadConfig();
+  loadProductsFromGitHub();
+</script>
+</body>
+</html>

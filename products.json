@@ -1,0 +1,90 @@
+[
+  {
+    "id": "1",
+    "name": "Luminária de Mesa LED Regulável",
+    "category": "casa",
+    "description": "Design minimalista com 3 temperaturas de cor e intensidade ajustável. Perfeita para home office ou quarto.",
+    "price": "R$ 189,90",
+    "image": "https://picsum.photos/seed/lamp1/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo1",
+    "platform": "Amazon",
+    "featured": true
+  },
+  {
+    "id": "2",
+    "name": "Vaso Autoirrigável Cerâmica",
+    "category": "casa",
+    "description": "Cerâmica artesanal com sistema de autoirrigação. Ideal para plantas de interior e quem esquece de regar.",
+    "price": "R$ 94,90",
+    "image": "https://picsum.photos/seed/vase2/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo2",
+    "platform": "Amazon",
+    "featured": false
+  },
+  {
+    "id": "3",
+    "name": "Tapete de Yoga Antiderrapante 6mm",
+    "category": "esportes",
+    "description": "Borracha natural ecológica, alinhamento impresso e bolsa de transporte incluída. Disponível em 5 cores.",
+    "price": "R$ 149,90",
+    "image": "https://picsum.photos/seed/yoga3/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo3",
+    "platform": "Amazon",
+    "featured": true
+  },
+  {
+    "id": "4",
+    "name": "Squeeze Térmica 700ml Inox",
+    "category": "esportes",
+    "description": "Mantém bebidas geladas por 24h e quentes por 12h. Sem BPA, tampa com travas de segurança.",
+    "price": "R$ 79,90",
+    "image": "https://picsum.photos/seed/bottle4/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo4",
+    "platform": "Amazon",
+    "featured": false
+  },
+  {
+    "id": "5",
+    "name": "Kit Skincare Vitamina C + Retinol",
+    "category": "beleza",
+    "description": "Sérum vitamina C 20%, creme noturno com retinol 0,3% e protetor solar FPS50. Fórmula dermatologicamente testada.",
+    "price": "R$ 219,90",
+    "image": "https://picsum.photos/seed/skin5/600/400",
+    "affiliateUrl": "https://hotmart.com/exemplo5",
+    "platform": "Hotmart",
+    "featured": true
+  },
+  {
+    "id": "6",
+    "name": "Bolsa Tote de Lona Reciclada",
+    "category": "beleza",
+    "description": "Feita com lona de algodão reciclado, alças reforçadas e bolso interno. Sustentável e estilosa.",
+    "price": "R$ 129,90",
+    "image": "https://picsum.photos/seed/bag6/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo6",
+    "platform": "Amazon",
+    "featured": false
+  },
+  {
+    "id": "7",
+    "name": "Colágeno Hidrolisado + Vitamina C",
+    "category": "saude",
+    "description": "30 sachês sabor limão. Colágeno tipo I e III com absorção potencializada pela vitamina C. Sem glúten.",
+    "price": "R$ 89,90",
+    "image": "https://picsum.photos/seed/colag7/600/400",
+    "affiliateUrl": "https://amzn.to/exemplo7",
+    "platform": "Amazon",
+    "featured": true
+  },
+  {
+    "id": "8",
+    "name": "Curso Meditação e Mindfulness",
+    "category": "saude",
+    "description": "12 semanas com práticas guiadas em vídeo, grupo de suporte e certificado. Acesso vitalício.",
+    "price": "R$ 197,00",
+    "image": "https://picsum.photos/seed/medit8/600/400",
+    "affiliateUrl": "https://hotmart.com/exemplo8",
+    "platform": "Hotmart",
+    "featured": false
+  }
+]
