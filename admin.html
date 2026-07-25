@@ -30,6 +30,49 @@
 
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; min-height: 100vh; }
 
+    /* ── Login screen ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #EAF2EB 0%, #FBF3F0 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #login-screen.hidden { display: none; }
+    .login-box {
+      background: var(--white); border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(44,42,39,.12);
+      padding: 40px 36px; width: 100%; max-width: 380px;
+      text-align: center;
+    }
+    .login-logo {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 22px; font-weight: 600; color: var(--ink);
+      margin-bottom: 4px; letter-spacing: -.3px;
+    }
+    .login-logo span { color: var(--sage); }
+    .login-sub { font-size: 13px; color: var(--stone); margin-bottom: 28px; }
+    .login-field { margin-bottom: 14px; text-align: left; }
+    .login-field label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-lt); margin-bottom: 5px; }
+    .login-field input {
+      width: 100%; padding: 10px 14px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+      transition: border-color .15s;
+    }
+    .login-field input:focus { outline: none; border-color: var(--sage); background: var(--white); }
+    .login-btn {
+      width: 100%; padding: 11px; border-radius: 9px; border: none;
+      background: var(--sage); color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background .15s; margin-top: 4px;
+    }
+    .login-btn:hover { background: var(--sage-dk); }
+    .login-error {
+      margin-top: 12px; font-size: 12px; color: var(--danger);
+      display: none;
+    }
+    .login-error.show { display: block; }
+
     /* ── Top bar ── */
     .topbar {
       background: var(--ink); color: #fff;
@@ -200,6 +243,20 @@
 </head>
 <body>
 
+<!-- ── Login Screen ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Vitrine<span>.</span> Admin</div>
+    <p class="login-sub">Acesso restrito — identifique-se para continuar</p>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="login-pass" placeholder="••••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <p class="login-error" id="login-error">Senha incorreta. Tente novamente.</p>
+  </div>
+</div>
+
 <div class="topbar">
   <span class="topbar-logo">Vitrine<span>.</span> Admin</span>
   <div class="topbar-right">
@@ -216,6 +273,7 @@
     <button class="nav-btn" data-page="config"><span class="nav-icon">⚙️</span> Configurações</button>
     <hr class="sidebar-divider">
     <button class="nav-btn" onclick="window.open('index.html','_blank')"><span class="nav-icon">🔗</span> Ver site</button>
+    <button class="nav-btn" onclick="doLogout()" style="color:var(--danger);margin-top:4px"><span class="nav-icon">🚪</span> Sair</button>
   </nav>
 
   <main class="content">
@@ -326,6 +384,23 @@
       </div>
 
       <div class="config-card">
+        <h3>🔒 Alterar senha do admin</h3>
+        <p class="field-hint" style="margin-bottom:16px">A senha fica salva apenas no seu navegador (localStorage). Troque pela primeira vez assim que entrar.</p>
+        <div class="field">
+          <label>Nova senha</label>
+          <input type="password" id="cfg-newpass" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="field">
+          <label>Confirmar nova senha</label>
+          <input type="password" id="cfg-confirmpass" placeholder="Repita a senha">
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-primary" onclick="changePassword()">Salvar nova senha</button>
+          <span id="pass-msg" style="font-size:13px;display:none"></span>
+        </div>
+      </div>
+
+      <div class="config-card">
         <h3>Como publicar o site</h3>
         <ol style="padding-left:18px;line-height:2;font-size:13px;color:var(--ink-lt)">
           <li>Crie um repositório público no GitHub.</li>
@@ -344,6 +419,68 @@
 
 <script>
   const CATS_LABEL = { casa:'Casa & Decoração', saude:'Saúde & Bem-estar', beleza:'Moda & Beleza', esportes:'Esportes & Fitness' };
+
+  /* ── Password / Login ── */
+  const DEFAULT_PASS = 'vitrine2025'; // senha inicial — troque em Configurações
+
+  async function hashStr(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function getSavedHash() {
+    return localStorage.getItem('admin_pass_hash') || await hashStr(DEFAULT_PASS);
+  }
+
+  async function doLogin() {
+    const pass = document.getElementById('login-pass').value;
+    if (!pass) return;
+    const entered = await hashStr(pass);
+    const saved   = await getSavedHash();
+    if (entered === saved) {
+      sessionStorage.setItem('admin_auth', '1');
+      document.getElementById('login-screen').classList.add('hidden');
+      loadConfig();
+      loadProductsFromGitHub();
+    } else {
+      document.getElementById('login-error').classList.add('show');
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem('admin_auth');
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-error').classList.remove('show');
+    document.getElementById('login-screen').classList.remove('hidden');
+  }
+
+  async function changePassword() {
+    const np = document.getElementById('cfg-newpass').value;
+    const cp = document.getElementById('cfg-confirmpass').value;
+    const msg = document.getElementById('pass-msg');
+    if (np.length < 6) { msg.textContent = '⚠️ Mínimo 6 caracteres.'; msg.style.color = 'var(--danger)'; msg.style.display = 'inline'; return; }
+    if (np !== cp)     { msg.textContent = '⚠️ Senhas não coincidem.'; msg.style.color = 'var(--danger)'; msg.style.display = 'inline'; return; }
+    const hash = await hashStr(np);
+    localStorage.setItem('admin_pass_hash', hash);
+    document.getElementById('cfg-newpass').value = '';
+    document.getElementById('cfg-confirmpass').value = '';
+    msg.textContent = '✅ Senha alterada!'; msg.style.color = 'var(--sage-dk)'; msg.style.display = 'inline';
+    setTimeout(() => { msg.style.display = 'none'; }, 3000);
+  }
+
+  // Enter key on login
+  document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  // Check session on load
+  if (sessionStorage.getItem('admin_auth') === '1') {
+    document.getElementById('login-screen').classList.add('hidden');
+    // Will be initialized after DOM is ready
+    window.addEventListener('DOMContentLoaded', () => { loadConfig(); loadProductsFromGitHub(); });
+    // If DOMContentLoaded already fired (script is at bottom), run immediately
+    if (document.readyState !== 'loading') { loadConfig(); loadProductsFromGitHub(); }
+  }
 
   /* ── State ── */
   let products = [];
@@ -619,8 +756,8 @@
   }
 
   /* ── Init ── */
-  loadConfig();
-  loadProductsFromGitHub();
+  // loadConfig() and loadProductsFromGitHub() are called after successful login
+  // or immediately if session is already active (handled above)
 </script>
 </body>
 </html>
