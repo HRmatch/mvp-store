@@ -87,12 +87,12 @@
     .card-desc { font-size: 13px; color: var(--ink-lt); font-weight: 300; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ── Card Footer ── */
-    .card-footer { padding: 12px 20px 18px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); gap: 8px; }
+    .card-footer { padding: 12px 20px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--border); }
     .price { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 600; color: var(--ink); white-space: nowrap; }
-    .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .info-btn { padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--sage); background: transparent; color: var(--sage); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .info-btn { padding: 9px 8px; border-radius: 8px; border: 1.5px solid var(--sage); background: transparent; color: var(--sage); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; text-align: center; width: 100%; }
     .info-btn:hover { background: var(--sage-lt); }
-    .cta-btn { padding: 8px 16px; border-radius: 8px; background: var(--sage); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; border: none; cursor: pointer; text-decoration: none; transition: background .15s; white-space: nowrap; display: inline-block; }
+    .cta-btn { padding: 9px 8px; border-radius: 8px; background: var(--sage); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; border: none; cursor: pointer; text-decoration: none; transition: background .15s; display: block; text-align: center; }
     .cta-btn:hover { background: var(--sage-dk); }
 
     /* ── Empty ── */
