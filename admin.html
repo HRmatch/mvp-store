@@ -235,6 +235,23 @@
     }
     #saving-toast.show { transform: translateY(0); opacity: 1; }
 
+    /* ── Multi-image manager ── */
+    .img-manager { display: flex; flex-direction: column; gap: 8px; }
+    .img-row { display: flex; gap: 8px; align-items: center; }
+    .img-row input { flex: 1; padding: 9px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); transition: border-color .15s; }
+    .img-row input:focus { outline: none; border-color: var(--sage); background: var(--white); }
+    .img-row input.gdrive-detected { border-color: #4285f4; }
+    .btn-convert { padding: 6px 12px; border-radius: 7px; border: none; background: #e8f0fe; color: #1a73e8; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .15s; }
+    .btn-convert:hover { background: #d2e3fc; }
+    .btn-remove-img { width: 30px; height: 30px; border-radius: 7px; border: none; background: var(--danger-lt); color: var(--danger); font-size: 16px; cursor: pointer; flex-shrink: 0; transition: background .15s; display: flex; align-items: center; justify-content: center; }
+    .btn-remove-img:hover { background: #fad9d7; }
+    .btn-add-img { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1.5px dashed var(--border); background: transparent; color: var(--stone); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all .15s; margin-top: 2px; width: 100%; justify-content: center; }
+    .btn-add-img:hover { border-color: var(--sage); color: var(--sage); }
+    .img-hint { font-size: 11px; color: var(--stone); margin-top: 4px; line-height: 1.6; }
+    .img-hint a { color: var(--sage-dk); }
+    .img-preview-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .img-preview-thumb { width: 52px; height: 40px; object-fit: cover; border-radius: 5px; border: 1.5px solid var(--border); }
+
     @media (max-width: 640px) {
       .sidebar { display: none; }
       .form-grid { grid-template-columns: 1fr; }
@@ -324,9 +341,16 @@
             <input type="url" id="f-url" placeholder="https://amzn.to/... ou https://hotmart.com/...">
           </div>
           <div class="field span2">
-            <label>URL da imagem</label>
-            <input type="url" id="f-img" placeholder="https://...">
-            <p class="field-hint">Use uma URL direta de imagem (JPG/PNG). Você pode hospedar em <a href="https://imgur.com" target="_blank">Imgur</a> ou usar links do produto.</p>
+            <label>Imagens do produto <span style="color:var(--stone);font-weight:300">(mínimo 1, máximo 5)</span></label>
+            <div class="img-manager" id="img-manager"></div>
+            <button type="button" class="btn-add-img" id="btn-add-img" onclick="addImageField('')">+ Adicionar imagem</button>
+            <div id="img-preview-row" class="img-preview-row"></div>
+            <p class="img-hint">
+              💡 <strong>3 opções para hospedar suas imagens gratuitamente:</strong><br>
+              <strong>1. GitHub (recomendado):</strong> Suba a imagem na pasta <code style="background:var(--bg);padding:1px 5px;border-radius:3px">/images/</code> do seu repositório. Use o link <code style="background:var(--bg);padding:1px 5px;border-radius:3px">https://HRmatch.github.io/mvp-store/images/foto.jpg</code><br>
+              <strong>2. Google Drive:</strong> Cole o link de compartilhamento — o admin converte automaticamente. O botão azul aparece quando detectar um link do Drive.<br>
+              <strong>3. <a href="https://imgur.com/upload" target="_blank">Imgur</a>:</strong> Faça upload e copie o link direto da imagem.
+            </p>
           </div>
           <div class="field">
             <label>Plataforma</label>
@@ -633,9 +657,12 @@
       return;
     }
 
-    list.innerHTML = products.map(p => `
+    list.innerHTML = products.map(p => {
+      const firstImg = (Array.isArray(p.images) && p.images[0]) ? p.images[0] : (p.image || `https://picsum.photos/seed/${p.id}/120/90`);
+      return `
       <div class="product-row" id="row-${p.id}">
-        <img class="product-row-img" src="${p.image || 'https://picsum.photos/seed/' + p.id + '/120/90'}" alt="${p.name}" onerror="this.src='https://picsum.photos/seed/fallback/120/90'">
+        <img class="product-row-img" src="${firstImg}" alt="${p.name}" onerror="this.src='https://picsum.photos/seed/fallback/120/90'">
+        <div style="font-size:10px;color:var(--stone);margin-top:2px;text-align:center">${Array.isArray(p.images) ? p.images.length : 1} foto${(Array.isArray(p.images) ? p.images.length : 1) > 1 ? 's' : ''}</div>
         <div class="product-row-info">
           <div class="product-row-name">${p.name} ${p.featured ? '⭐' : ''}</div>
           <div class="product-row-meta">
@@ -648,11 +675,87 @@
           <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Editar</button>
           <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Excluir</button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   /* ── Form ── */
+  /* ── Image manager ── */
+  function normalizeGDrive(url) {
+    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w800` : url;
+  }
+
+  function isGDrive(url) {
+    return url.includes('drive.google.com') && url.includes('/d/');
+  }
+
+  function clearImageFields() {
+    document.getElementById('img-manager').innerHTML = '';
+    document.getElementById('img-preview-row').innerHTML = '';
+  }
+
+  function addImageField(value = '') {
+    const manager = document.getElementById('img-manager');
+    const count = manager.querySelectorAll('.img-row').length;
+    if (count >= 5) { showPageAlert('Máximo de 5 imagens por produto.', 'warn'); return; }
+
+    const idx = Date.now();
+    const row = document.createElement('div');
+    row.className = 'img-row';
+    row.dataset.idx = idx;
+    row.innerHTML = `
+      <input type="url" class="img-input" placeholder="https://... ou link do Google Drive" value="${value}"
+        oninput="onImgInput(this)" onpaste="setTimeout(()=>onImgInput(this),0)">
+      <button type="button" class="btn-convert" style="display:none" onclick="convertGDrive(this)">🔗 Converter Drive</button>
+      <button type="button" class="btn-remove-img" onclick="removeImageField(this)" title="Remover">×</button>`;
+    manager.appendChild(row);
+
+    const input = row.querySelector('.img-input');
+    if (value) onImgInput(input);
+    return input;
+  }
+
+  function onImgInput(input) {
+    const btn = input.nextElementSibling;
+    if (isGDrive(input.value)) {
+      input.classList.add('gdrive-detected');
+      btn.style.display = 'inline-flex';
+    } else {
+      input.classList.remove('gdrive-detected');
+      btn.style.display = 'none';
+    }
+    updateImgPreviews();
+  }
+
+  function convertGDrive(btn) {
+    const input = btn.previousElementSibling;
+    input.value = normalizeGDrive(input.value);
+    input.classList.remove('gdrive-detected');
+    btn.style.display = 'none';
+    updateImgPreviews();
+    showPageAlert('Link do Google Drive convertido!', 'success');
+  }
+
+  function removeImageField(btn) {
+    btn.closest('.img-row').remove();
+    updateImgPreviews();
+  }
+
+  function updateImgPreviews() {
+    const urls = getImageUrls();
+    const prev = document.getElementById('img-preview-row');
+    prev.innerHTML = urls.filter(Boolean).map(url =>
+      `<img class="img-preview-thumb" src="${url}" onerror="this.style.display='none'" title="${url}">`
+    ).join('');
+  }
+
+  function getImageUrls() {
+    return Array.from(document.querySelectorAll('.img-input'))
+      .map(inp => inp.value.trim())
+      .filter(Boolean);
+  }
+
   function openAddForm() {
     editingId = null;
     document.getElementById('form-title').textContent = 'Novo produto';
@@ -662,9 +765,10 @@
     document.getElementById('f-price').value = '';
     document.getElementById('f-desc').value = '';
     document.getElementById('f-url').value = '';
-    document.getElementById('f-img').value = '';
     document.getElementById('f-platform').value = 'Amazon';
     document.getElementById('f-featured').checked = false;
+    clearImageFields();
+    addImageField('');
     const form = document.getElementById('product-form');
     form.classList.add('open');
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -681,9 +785,12 @@
     document.getElementById('f-price').value = p.price;
     document.getElementById('f-desc').value = p.description;
     document.getElementById('f-url').value = p.affiliateUrl;
-    document.getElementById('f-img').value = p.image || '';
     document.getElementById('f-platform').value = p.platform;
     document.getElementById('f-featured').checked = !!p.featured;
+    // Load images
+    clearImageFields();
+    const images = Array.isArray(p.images) && p.images.length ? p.images : (p.image ? [p.image] : ['']);
+    images.forEach(url => addImageField(url));
     const form = document.getElementById('product-form');
     form.classList.add('open');
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -702,6 +809,9 @@
       return;
     }
 
+    const images = getImageUrls();
+    if (!images.length) images.push(`https://picsum.photos/seed/${Date.now()}/600/400`);
+
     const product = {
       id:          editingId || String(Date.now()),
       name,
@@ -709,7 +819,7 @@
       price:       document.getElementById('f-price').value.trim() || 'Consulte',
       description: document.getElementById('f-desc').value.trim(),
       affiliateUrl:url,
-      image:       document.getElementById('f-img').value.trim() || `https://picsum.photos/seed/${Date.now()}/600/400`,
+      images,
       platform:    document.getElementById('f-platform').value,
       featured:    document.getElementById('f-featured').checked
     };
