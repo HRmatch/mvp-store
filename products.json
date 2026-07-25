@@ -1,24 +1,24 @@
 [
   {
     "id": "1",
-    "name": "LuminÃ¡ria de Mesa LED RegulÃ¡vel",
+    "name": "LuminÃÂ¡ria de Mesa LED RegulÃÂ¡vel",
     "category": "casa",
     "price": "R$ 189,90",
-    "description": "Design minimalista com 3 temperaturas de cor e intensidade ajustÃ¡vel. Perfeita para home office ou quarto. Estrutura em alumÃ­nio escovado, cabo de 1,5m e entrada USB-C. CertificaÃ§Ã£o INMETRO e garantia de 1 ano.",
+    "description": "Design minimalista com 3 temperaturas de cor e intensidade ajustÃÂ¡vel. Perfeita para home office ou quarto. Estrutura em alumÃÂ­nio escovado, cabo de 1,5m e entrada USB-C. CertificaÃÂ§ÃÂ£o INMETRO e garantia de 1 ano.",
     "affiliateUrl": "https://amzn.to/exemplo1",
     "images": [
-      "https://picsum.photos/seed/lamp1a/600/400",
       "https://picsum.photos/seed/lamp1b/600/400",
-      "https://picsum.photos/seed/lamp1c/600/400"
+      "https://picsum.photos/seed/lamp1c/600/400",
+      "https://drive.google.com/thumbnail?id=16gdiug3tAShYVyCaem77aypgKfw1RAxt&sz=w800"
     ],
     "platform": "Amazon",
     "featured": true
   },
   {
     "id": "2",
-    "name": "Vaso AutoirrigÃ¡vel CerÃ¢mica",
+    "name": "Vaso AutoirrigÃÂ¡vel CerÃÂ¢mica",
     "category": "casa",
-    "description": "CerÃ¢mica artesanal com sistema de autoirrigaÃ§Ã£o. Ideal para plantas de interior e quem esquece de regar. ReservatÃ³rio interno de 200ml, disponÃ­vel em 4 cores neutras.",
+    "description": "CerÃÂ¢mica artesanal com sistema de autoirrigaÃÂ§ÃÂ£o. Ideal para plantas de interior e quem esquece de regar. ReservatÃÂ³rio interno de 200ml, disponÃÂ­vel em 4 cores neutras.",
     "price": "R$ 94,90",
     "images": [
       "https://picsum.photos/seed/vase2a/600/400",
@@ -32,7 +32,7 @@
     "id": "3",
     "name": "Tapete de Yoga Antiderrapante 6mm",
     "category": "esportes",
-    "description": "Borracha natural ecolÃ³gica com alinhamento impresso e bolsa de transporte incluÃ­da. DimensÃµes 183x61cm, espessura 6mm. DisponÃ­vel em 5 cores. Excelente para prÃ¡tica em casa ou academia.",
+    "description": "Borracha natural ecolÃÂ³gica com alinhamento impresso e bolsa de transporte incluÃÂ­da. DimensÃÂµes 183x61cm, espessura 6mm. DisponÃÂ­vel em 5 cores. Excelente para prÃÂ¡tica em casa ou academia.",
     "price": "R$ 149,90",
     "images": [
       "https://picsum.photos/seed/yoga3a/600/400",
@@ -45,9 +45,9 @@
   },
   {
     "id": "4",
-    "name": "Squeeze TÃ©rmica 700ml Inox",
+    "name": "Squeeze TÃÂ©rmica 700ml Inox",
     "category": "esportes",
-    "description": "MantÃ©m bebidas geladas por 24h e quentes por 12h. Sem BPA, tampa com travas de seguranÃ§a, boca larga para gelo. AÃ§o inox 18/8 de alta qualidade.",
+    "description": "MantÃÂ©m bebidas geladas por 24h e quentes por 12h. Sem BPA, tampa com travas de seguranÃÂ§a, boca larga para gelo. AÃÂ§o inox 18/8 de alta qualidade.",
     "price": "R$ 79,90",
     "images": [
       "https://picsum.photos/seed/bottle4a/600/400",
@@ -61,7 +61,7 @@
     "id": "5",
     "name": "Kit Skincare Vitamina C + Retinol",
     "category": "beleza",
-    "description": "SÃ©rum vitamina C 20%, creme noturno com retinol 0,3% e protetor solar FPS50. FÃ³rmula dermatologicamente testada, sem parabenos e fragÃ¢ncias. Para todos os tipos de pele.",
+    "description": "SÃÂ©rum vitamina C 20%, creme noturno com retinol 0,3% e protetor solar FPS50. FÃÂ³rmula dermatologicamente testada, sem parabenos e fragÃÂ¢ncias. Para todos os tipos de pele.",
     "price": "R$ 219,90",
     "images": [
       "https://picsum.photos/seed/skin5a/600/400",
@@ -76,7 +76,7 @@
     "id": "6",
     "name": "Bolsa Tote de Lona Reciclada",
     "category": "beleza",
-    "description": "Feita com lona de algodÃ£o reciclado, alÃ§as reforÃ§adas e bolso interno zÃ­per. SustentÃ¡vel e estilosa. Capacidade 15L, suporta atÃ© 8kg.",
+    "description": "Feita com lona de algodÃÂ£o reciclado, alÃÂ§as reforÃÂ§adas e bolso interno zÃÂ­per. SustentÃÂ¡vel e estilosa. Capacidade 15L, suporta atÃÂ© 8kg.",
     "price": "R$ 129,90",
     "images": [
       "https://picsum.photos/seed/bag6a/600/400",
@@ -88,9 +88,9 @@
   },
   {
     "id": "7",
-    "name": "ColÃ¡geno Hidrolisado + Vitamina C",
+    "name": "ColÃÂ¡geno Hidrolisado + Vitamina C",
     "category": "saude",
-    "description": "30 sachÃªs sabor limÃ£o. ColÃ¡geno tipo I e III com absorÃ§Ã£o potencializada pela vitamina C. Sem glÃºten, sem lactose. Cada dose fornece 10g de colÃ¡geno hidrolisado.",
+    "description": "30 sachÃÂªs sabor limÃÂ£o. ColÃÂ¡geno tipo I e III com absorÃÂ§ÃÂ£o potencializada pela vitamina C. Sem glÃÂºten, sem lactose. Cada dose fornece 10g de colÃÂ¡geno hidrolisado.",
     "price": "R$ 89,90",
     "images": [
       "https://picsum.photos/seed/colag7a/600/400",
@@ -102,9 +102,9 @@
   },
   {
     "id": "8",
-    "name": "Curso MeditaÃ§Ã£o e Mindfulness",
+    "name": "Curso MeditaÃÂ§ÃÂ£o e Mindfulness",
     "category": "saude",
-    "description": "12 semanas com prÃ¡ticas guiadas em vÃ­deo, grupo de suporte no Telegram e certificado digital. Acesso vitalÃ­cio com atualizaÃ§Ãµes inclusas. Mais de 2.000 alunos.",
+    "description": "12 semanas com prÃÂ¡ticas guiadas em vÃÂ­deo, grupo de suporte no Telegram e certificado digital. Acesso vitalÃÂ­cio com atualizaÃÂ§ÃÂµes inclusas. Mais de 2.000 alunos.",
     "price": "R$ 197,00",
     "images": [
       "https://picsum.photos/seed/medit8a/600/400",
